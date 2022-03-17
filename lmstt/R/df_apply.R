@@ -1,19 +1,23 @@
 #' Apply functions to data frame
 #'
-#' @param .data A character vector with, at most, one element.
-#' @inheritParams stringr::str_split
+#' @param .data A data frame
+#' @param .f a function
+#' @param .condition a condition function
+#' @param .else a function to apply when .condition() evaluates to FALSE
+#' @param ... additional arguments that will be passed to .f()
+#' @inheritParams prrr::map_df
 #'
-#' @return A character vector.
+#' @return A data frame
 #' @export
 #'
 #' @examples
-#' x <- "alfa,bravo,charlie,delta"
-#' str_split_one(x, pattern = ",")
-#' str_split_one(x, pattern = ",", n = 2)
-#'
-#' y <- "192.168.0.1"
-#' str_split_one(y, pattern = stringr::fixed("."))
+#' df_apply(iris, round, is.numeric, return, digit = 1)
+#' 
 
 df_apply <- function(.data, .f, .condition, .else, ...) {
-  .data |> map_df( ~ if (is.numeric(.)) round(., digits) else .)
+  .data |> purrr::map_df(
+    function(.x){
+      if (.condition(.x)) .f(.x, ...) else (.else(.x))
+      } 
+    )
 }

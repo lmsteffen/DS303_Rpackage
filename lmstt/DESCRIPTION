@@ -4,8 +4,7 @@ Version: 0.0.0.9000
 Authors@R: 
     person("Lauren", "Steffen", , "lmsteffen878@gmail.com", role = c("aut", "cre")),
     person("Tomoki", "Takeuchi", , "tomoki.takeuchi.0414@gmail.com", role = c("aut", "cre"))
-Description: Contains a function that will apply a given function
-to a dataframe depending on another given conditional function. Will return a dataframe.
+Description: Contains a function that will apply a given function to a dataframe depending on another given conditional function. Will return a dataframe.
 License: use_mit_license()
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
