@@ -4,7 +4,7 @@ library(unpivotr)
 library(readxl)
 library(stringi)
 
-oilSpills <- xlsx_cells('./data-raw/oilSpillsUS.xlsx') %>%   #convert to cell format so that tidyxl and unpivotr work
+oilSpills <- xlsx_cells('oilSpillsUS.xlsx') %>%   #convert to cell format so that tidyxl and unpivotr work
   filter(row != 1) %>%        #first row is title of the table
   select(row, col, data_type, character, numeric)   #select the columns containing data and its location
 

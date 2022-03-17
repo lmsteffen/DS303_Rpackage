@@ -14,11 +14,8 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup, include=FALSE, echo = FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-library(tidyverse)
-library(plotly)
-library(crosstalk)
+```{r setup}
+library(lmstt)
 ```
 
 ## Background
