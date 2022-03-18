@@ -1,0 +1,168 @@
+---
+title: "lms-index"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{lms-index}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(lmstt)
+```
+
+```{r, setup, include=FALSE}
+library(mosaic)    # Load additional packages here 
+library(ggformula) # formula interface to ggplot2
+library(plotly)
+library(tidyverse)
+library(tidyxl)
+library(unpivotr)
+library(readxl)
+library(stringi)
+
+# Some customization.  You can alter or delete as desired (if you know what you are doing).
+
+knitr::opts_chunk$set(
+  echo = params$show_code
+  )  
+```
+
+
+  
+```{r}
+oilSpills <- xlsx_cells('oilSpillsUS.xlsx') %>%   #convert to cell format so that tidyxl and unpivotr work
+  filter(row != 1) %>%        #first row is title of the table
+  select(row, col, data_type, character, numeric)   #select the columns containing data and its location
+
+oilSpills <- oilSpills %>% 
+  behead("up-left", Year) %>%  #behead Year
+  filter(row < 14)  %>%   #last rows are metadata so filter them out
+  behead("up", Value) %>%  #behead Incidents and Gallons spilled
+  behead('left', Source) %>%  #behead Source
+  pivot_wider(names_from = Value, values_from = numeric) #pivot wider so there is a column for Incidents and Gallons spilled
+
+oilSpills <- oilSpills %>% 
+ select(Year, Source, Incidents, `Gallons spilled`) %>% 
+ group_by(Year, Source) %>% 
+ summarise_all(list(~trimws(paste(., collapse = '')))) %>% #merge rows together
+ ungroup()
+
+oilSpills$Incidents <- gsub('.{2}$', '', oilSpills$Incidents) %>%  #trim NAs
+  as.numeric() %>% #convert string to double 
+  suppressWarnings()  #suppress warnings, there should be some NAs
+oilSpills$`Gallons spilled` <- gsub('^[A-Za-z]{2}', '', oilSpills$`Gallons spilled`) %>% #trim NAs
+  as.numeric() %>% #convert string to double
+   suppressWarnings()   #suppress warnings, there should be some NAs
+```
+
+
+## Data
+The data came from the [Bureau of Transportation Statistics](https://www.bts.gov/content/petroleum-oil-spills-impacting-navigable-us-waters). Only the pollution incidents where the Coast Guard investigated as the lead agency are included in this dataset. Data on spills where the Environmental Protection Agency or any of the state authorities are the lead agency is not included. These are mostly offshore spills as the EPA usually handles inshore spills. These statistics cover yearly gallons spilled, number of incidents, and source type from 1985, 1990, 1995-2020. 
+
+## Vessel, Non-Vessel, and Mystery Sources
+
+### Gallons Spilled
+
+```{r}
+oilSpills %>% filter(Source == "Vessel sources, total" | 
+                     Source == "Nonvessel sources, total"|
+                     Source == "Mysteryc") %>%
+  plot_ly(x = ~Year, y =~`Gallons spilled`, color = ~Source, type="bar", colors = 
+            c("#a6cee3", "#1f78b4", "#b2df8a"),
+           width = 1000) %>%
+  layout(yaxis = list(fixedrange = FALSE),
+         updatemenus = list(
+            list(
+              type = "buttons",
+              x = 0.6,
+              y = 1,
+              direction = "right",
+              buttons = list(
+                
+                list(method = "relayout",
+                args = list("barmode","dodge"),
+                label = "Grouped"),
+
+                list(method = "relayout",
+                args = list("barmode","stack"),
+                label = "Stacked")))
+
+                
+  ))
+```
+
+["On April 20, 2010, the oil drilling rig Deepwater Horizon, operating in the Macondo Prospect in the Gulf of Mexico, exploded and sank resulting in the death of 11 workers on the Deepwater Horizon and the largest spill of oil in the history of marine oil drilling operations."](https://www.epa.gov/enforcement/deepwater-horizon-bp-gulf-mexico-oil-spill#:~:text=On%20April%2020%2C%202010%2C%20the,of%20marine%20oil%20drilling%20operations.)
+
+### Incidents
+
+```{r}
+oilSpills %>% filter(Source == "Vessel sources, total"| 
+                     Source == "Nonvessel sources, total"|
+                     Source == "Mysteryc")  %>%
+  drop_na() %>%
+  plot_ly(width = 1000) %>%
+  add_trace(x = ~Year, y = ~Incidents, type = 'scatter', color =~Source, mode = 'lines+markers', 
+            colors = c("#a6cee3", "#1f78b4", "#b2df8a"))
+  
+```
+
+### Source, Incidents, and Gallons Spilled
+
+```{r fig.width=8, fig.width=7}
+y2 <- list(
+  overlaying = "y",
+  side = "right",
+  title = "Number of Incidents",
+  automargin = T)
+
+oilSpills %>% filter(Source != "TOTAL all spills", 
+                     Source != "Vessel sources, total", 
+                     Source != "Nonvessel sources, total")  %>%
+  drop_na() %>%
+  mutate(Source = fct_reorder(Source, desc(`Gallons spilled`))) %>%
+  plot_ly(x = ~Year, y =~`Gallons spilled`, color = ~Source, type="bar", colors = "Accent",
+          width = 1000, height = 500) %>%
+  group_by(Year) %>%
+  summarise(n = sum(Incidents)) %>%
+  add_trace(x = ~Year, y = ~n, type = 'scatter',  mode = 'markers', 
+            name = "Incidents", yaxis = "y2", color = I("black")) %>%
+  layout(yaxis2 = y2,
+         yaxis = list(fixedrange = FALSE),
+          updatemenus = list(
+            list(
+              type = "buttons",
+              x = 0.6,
+              y = 1,
+              direction = "right",
+              buttons = list(
+                
+                list(method = "relayout",
+                args = list("barmode","dodge"),
+                label = "Grouped"),
+
+                list(method = "relayout",
+                args = list("barmode","stack"),
+                label = "Stacked")))
+  )) %>%
+  rangeslider()
+
+```
+
+## References 
+
+* [unpivotr](https://nacnudus.github.io/spreadsheet-munging-strategies/pivot-simple.html#two-clear-rows-of-text-column-headers-left-aligned)
+
+* [behead function](https://www.rdocumentation.org/packages/unpivotr/versions/0.6.2/topics/behead)
+
+* [tidyxl](https://cran.r-project.org/web/packages/tidyxl/vignettes/tidyxl.html`)
+
+* [range slider](https://stackoverflow.com/questions/62875576/zoom-on-y-axis-while-using-plotlyrangeslider)
+
