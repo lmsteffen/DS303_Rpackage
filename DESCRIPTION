@@ -12,9 +12,18 @@ RoxygenNote: 7.1.2
 Depends: 
     R (>= 2.10)
 LazyData: true
+Imports:
+    forcats,
+    ggrepel,
+    ggplot2,
+    purrr,
+    plotly,
+    tidyr
 Suggests: 
     rmarkdown,
     knitr,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    dplyr,
+    crosstalk
 VignetteBuilder: knitr
 Config/testthat/edition: 3
