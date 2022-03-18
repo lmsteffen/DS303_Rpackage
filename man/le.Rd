@@ -16,17 +16,15 @@ A data frame with 60067 rows and 7 variables:
 *continent Continent of which the country belongs to
 }
 \source{
-\url{https://ourworldindata.org/grapher/life-expectancy-vs-gdp-per-capita"
+\url{https://ourworldindata.org/grapher/life-expectancy-vs-gdp-per-capita}
 }
 \usage{
 le
 }
 \description{
-A dataset containing countries, country codes, life expectancy,
-GDP per capita, and Population for year from 1950 to 2019
+A dataset containing countries, country codes, life expectancy, GDP per capita, and Population for year from 1950 to 2019
 }
 \examples{
 mean_life_expectancy <- mean(le$life_expectancy)
-
 }
 \keyword{datasets}

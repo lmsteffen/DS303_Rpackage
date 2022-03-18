@@ -13,6 +13,5 @@
 #'  *continent Continent of which the country belongs to
 #'
 #' @examples mean_life_expectancy <- mean(le$life_expectancy)
-#' 
 #' @source \url{https://ourworldindata.org/grapher/life-expectancy-vs-gdp-per-capita}
 "le"
