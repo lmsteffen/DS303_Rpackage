@@ -1,3 +1,6 @@
+library(dplyr)
+library(tidyverse)
+
 le <- read.csv("data-raw/life_expectancy_data.csv") %>%
   janitor::clean_names() %>%
   na.omit() %>%

@@ -29,53 +29,53 @@ Since the video did not share the dataset, I downloaded another dataset from [Ou
 I used plotly and crosstalk to make a visualization.  I think crosstalk does not go well with animation plots as the continents/countries shown are different from ones selected.
 
 ```{r message=FALSE, warning=FALSE, echo = FALSE}
-shared_le <- SharedData$new(le)
+shared_le <- crosstalk::SharedData$new(le)
 
-bscols(widths = c(2,NA),
+crosstalk::bscols(widths = c(2,NA),
   list(
-    filter_select("continent", "Continent", shared_le, ~continent)
+    crosstalk::filter_select("continent", "Continent", shared_le, ~continent)
   ),
-  ggplotly(shared_le %>% 
-  ggplot(aes(gdp_per_capita, life_expectancy)) +
-  geom_point(aes(size = population_historical_estimates, frame = year, ids = entity, color = continent)) +
-  scale_x_log10() +
-  labs(x = "GDP per Capita", y = "Life Expectancy", size = ""))
+  plotly::ggplotly(shared_le |> 
+  ggplot2::ggplot(ggplot2::aes(gdp_per_capita, life_expectancy)) +
+  ggplot2::geom_point(ggplot2::aes(size = population_historical_estimates, frame = year, ids = entity, color = continent)) +
+  ggplot2::scale_x_log10() +
+  ggplot2::labs(x = "GDP per Capita", y = "Life Expectancy", size = ""))
 )
 ```
 
 ## Show countries in North America
 
 ```{r message=FALSE, warning=FALSE, echo = FALSE}
-le_na <- le %>% filter(continent == "North America")
-shared_le_na <- SharedData$new(le_na)
+le_na <- le |> dplyr::filter(continent == "North America")
+shared_le_na <- crosstalk::SharedData$new(le_na)
 
-bscols(widths = c(2,NA),
+crosstalk::bscols(widths = c(2,NA),
   list(
-    filter_select("entity", "Country", shared_le_na, ~entity)
+    crosstalk::filter_select("entity", "Country", shared_le_na, ~entity)
   ),
-  ggplotly(
-  ggplot(data = shared_le_na, aes(gdp_per_capita, life_expectancy)) +
-  geom_point(aes(size = population_historical_estimates, frame = year, color = entity)) +
-  scale_x_log10() +
-  labs(x = "GDP per Capita", y = "Life Expectancy", color = "Country", size = ""))
+  plotly::ggplotly(
+  ggplot2::ggplot(data = shared_le_na, ggplot2::aes(gdp_per_capita, life_expectancy)) +
+  ggplot2::geom_point(ggplot2::aes(size = population_historical_estimates, frame = year, color = entity)) +
+  ggplot2::scale_x_log10() +
+  ggplot2::labs(x = "GDP per Capita", y = "Life Expectancy", color = "Country", size = ""))
 )
 ```
 
 ## Better One
 
 ```{r message=FALSE, warning=FALSE, echo = FALSE}
-bscols(widths = c(2,4,6),
+crosstalk::bscols(widths = c(2,4,6),
   list(
-    filter_select("entity", "Country", shared_le, ~entity),
-    filter_slider("year", "Years", shared_le, ~year, round = TRUE)
+    crosstalk::filter_select("entity", "Country", shared_le, ~entity),
+    crosstalk::filter_slider("year", "Years", shared_le, ~year, round = TRUE)
   ),
-  add_lines(shared_le %>%
-  plot_ly(x = ~year, y = ~life_expectancy, color = ~entity, id = ~entity), showlegend = FALSE) %>% 
-    layout(xaxis = list(title = "Year"), yaxis = list(title = "Life Expectancy")),
+  plotly::add_lines(shared_le |>
+  plotly::plot_ly(x = ~year, y = ~life_expectancy, color = ~entity, id = ~entity), showlegend = FALSE) |> 
+    plotly::layout(xaxis = list(title = "Year"), yaxis = list(title = "Life Expectancy")),
   
-  add_lines(shared_le %>%
-  plot_ly(x = ~year, y = ~gdp_per_capita, color = ~entity, id = ~entity) %>% 
-    layout(xaxis = list(title = "Year"), yaxis = list(title = "GDP Per Capita")))
+  plotly::add_lines(shared_le |>
+  plotly::plot_ly(x = ~year, y = ~gdp_per_capita, color = ~entity, id = ~entity) |> 
+    plotly::layout(xaxis = list(title = "Year"), yaxis = list(title = "GDP Per Capita")))
 )
 ```
 
@@ -88,8 +88,8 @@ The code was taken and modified from [Wilke's github repo](https://github.com/cl
 The graph below shows how life expectancy and GDP per capita transition over time in Afghanistan. The transparency of the line represents year. In the future, I would like to incorporate the graph with crosstalk. It seems like crosstalk does not go well with `geom_text_repel`. I also need to figure out how to show only selected country in the graph (in the previous graphs, `color = entity` does it for me, but the graph below has nothing to differentiate countries if that makes sense).
 
 ```{r message=FALSE, warning=FALSE, echo = FALSE}
-le2 <- le %>% 
-  mutate(label = case_when
+le2 <- le |> 
+  dplyr::mutate(label = dplyr::case_when
          (year == "1950" ~ "1950",
           year == "1960" ~ "1960",
           year == "1970" ~ "1970",
@@ -101,30 +101,26 @@ le2 <- le %>%
 ```
 
 ```{r message=FALSE, warning=FALSE, echo = FALSE}
-library(ggridges)
-library(lubridate)
-library(ggrepel)
-
-time_series <- le2 %>%
-  filter(entity == "Afghanistan") %>% 
-  ggplot() +
-    aes(gdp_per_capita, life_expectancy, colour = as.numeric(year)) + 
-    geom_path(size = 1, lineend = "round") +
-  geom_text_repel(
-    aes(label = label), point.padding = .2, color = "black",
-    min.segment.length = 0, size = 12/.pt,
+time_series <- le2 |>
+  dplyr::filter(entity == "Afghanistan") |>
+  ggplot2::ggplot() +
+    ggplot2::aes(gdp_per_capita, life_expectancy, colour = as.numeric(year)) + 
+    ggplot2::geom_path(size = 1, lineend = "round") +
+  ggrepel::geom_text_repel(
+    ggplot2::aes(label = label), point.padding = .2, color = "black",
+    min.segment.length = 0,
     nudge_x = le2$nudge_x,
     nudge_y = le2$nudge_y,
     direction = "y"
   ) + 
-  scale_colour_gradient(low = "#E7F0FF", high = "#035B8F") + #"#0072b2") +
-  guides(colour = FALSE) +
-  coord_cartesian(clip = "off") +
-  theme(
-    axis.ticks.length = unit(0, "pt"),
-    plot.margin = margin(21, 14, 3.5, 1.5)) +
-  labs(title = "Life Expectancy and GDP change over time in Afghanistan", y = "Life Expectancy", x = "GDP per Capita") +
-  theme_bw()
+  ggplot2::scale_colour_gradient(low = "#E7F0FF", high = "#035B8F") + #"#0072b2") +
+  ggplot2::guides(colour = FALSE) +
+  ggplot2::coord_cartesian(clip = "off") +
+  ggplot2::theme(
+    axis.ticks.length = grid::unit(0, "pt"),
+    plot.margin = ggplot2::margin(21, 14, 3.5, 1.5)) +
+  ggplot2::labs(title = "Life Expectancy and GDP change over time in Afghanistan", y = "Life Expectancy", x = "GDP per Capita") +
+  ggplot2::theme_bw()
 
 time_series
 ```
