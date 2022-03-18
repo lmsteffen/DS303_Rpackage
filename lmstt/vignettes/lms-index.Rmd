@@ -83,7 +83,7 @@ oilSpills %>% dplyr::filter(Source != "TOTAL all spills",
                      Source != "Vessel sources, total", 
                      Source != "Nonvessel sources, total")  %>%
   tidyr::drop_na() %>%
-  dplyr::mutate(Source = fct_reorder(Source, desc(`Gallons spilled`))) %>%
+  dplyr::mutate(Source = forcats::fct_reorder(Source, dplyr::desc(`Gallons spilled`))) %>%
   plotly::plot_ly(x = ~Year, y =~`Gallons spilled`, color = ~Source, type="bar", colors = "Accent",
           width = 1000, height = 500) %>%
   dplyr::group_by(Year) %>%
