@@ -5,10 +5,11 @@ TestData <-
           integer = (1L:n) * (1L:n),
           character = LETTERS[1L:n],
           factor = factor(letters[1L:n]),
-          logical = rep(c(TRUE, FALSE), length.out = n) )
+          logical = rep(c(TRUE, FALSE), length.out = n))
 
 
 testthat::test_that("It works for double", {
   expect_equal(TestData |> df_apply(round, is.numeric, return, digit = 0), 
                TestData |> dplyr::mutate(double = c(2, 2, 5, 9, 10, 1, 4)))
 })
+
