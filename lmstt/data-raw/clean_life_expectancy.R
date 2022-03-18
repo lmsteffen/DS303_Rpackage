@@ -1,14 +1,11 @@
-library(dplyr)
-library(tidyverse)
-
-le <- read.csv("data-raw/life_expectancy_data.csv") %>%
-  janitor::clean_names() %>%
-  na.omit() %>%
-  filter(entity != "World",
+le <- read.csv("data-raw/life_expectancy_data.csv") |>
+  janitor::clean_names() |>
+  na.omit() |>
+  dplyr::filter(entity != "World",
          year >= 1950)
 
-le <- le %>%
-  mutate(continent = case_when
+le <- le |>
+  dplyr::mutate(continent = dplyr::case_when
          (entity %in% c("Algeria", "Angola", "Benin", "Botswana",
                         "Burkina Faso", "Burundi", "Cameroon", "Cape Verde",
                         "Central African Republic", "Chad", "Comoros", "Congo",
