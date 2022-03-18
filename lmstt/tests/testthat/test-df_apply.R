@@ -8,8 +8,9 @@ TestData <-
           logical = rep(c(TRUE, FALSE), length.out = n))
 
 
-testthat::test_that("It works for double", {
-  expect_equal(TestData |> df_apply(round, is.numeric, return, digit = 0), 
-               TestData |> dplyr::mutate(double = c(2, 2, 5, 9, 10, 1, 4)))
+testthat::test_that("It successfully apply round() to numeric values.", {
+  testthat::expect_equal(TestData |> df_apply(round, is.numeric, return, digit = 0), 
+               TestData |> dplyr::mutate(double = c(2, 2, 5, 9, 10, 1, 4),
+                                         x = c(12340, 1234, 123, 12, 1, 0, 0)))
 })
 
