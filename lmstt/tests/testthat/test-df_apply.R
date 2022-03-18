@@ -38,3 +38,8 @@ testthat::test_that("default function works", {
                                                    x = c(12340, 1234, 123, 12,  1,  0,  0)))
 }
 )
+
+testthat::test_that("It successfully applies tolower() to character values.", {
+  testthat::expect_equal(TestData |> df_apply(tolower, is.character, return), 
+                         TestData |> dplyr::mutate(character = tolower( LETTERS[1L:n])))
+})
