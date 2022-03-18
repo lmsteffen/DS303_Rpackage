@@ -114,7 +114,7 @@ time_series <- le2 |>
     direction = "y"
   ) + 
   ggplot2::scale_colour_gradient(low = "#E7F0FF", high = "#035B8F") + #"#0072b2") +
-  ggplot2::guides(colour = FALSE) +
+  ggplot2::guides(colour = "none") +
   ggplot2::coord_cartesian(clip = "off") +
   ggplot2::theme(
     axis.ticks.length = grid::unit(0, "pt"),
