@@ -26,18 +26,14 @@ testthat::test_that("else function works", {
                                                      x = c(12340, 1230, 120, 10,  0,  0,  0),
                                                      integer = c(0, 0, 10, 20, 20, 40, 50),
                                                      character = as.factor(LETTERS[1L:n]),
-                                                     logical = as.factor(rep(c(TRUE, FALSE), length.out = n))
-      )
-    )
-  }
-)
+                                                     logical = as.factor(rep(c(TRUE, FALSE), length.out = n))))
+})
 
 testthat::test_that("default function works", {
   testthat::expect_equal(TestData |> df_apply(round),
                          TestData |> dplyr::mutate(double = c(2, 2, 5, 9, 10, 1, 4),
                                                    x = c(12340, 1234, 123, 12,  1,  0,  0)))
-}
-)
+})
 
 testthat::test_that("It successfully applies tolower() to character values.", {
   testthat::expect_equal(TestData |> df_apply(tolower, is.character, return), 
