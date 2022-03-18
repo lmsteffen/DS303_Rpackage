@@ -14,3 +14,5 @@
 #'
 #'@source \url{https://www.bts.gov/content/petroleum-oil-spills-impacting-navigable-us-waters}
 #'
+
+"oilSpills"
