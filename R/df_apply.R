@@ -1,11 +1,12 @@
 #' Apply functions to data frame
+#' 
+#' Apply functions to data frame
 #'
 #' @param .data A data frame
 #' @param .f a function
 #' @param .condition a condition function
 #' @param .else a function to apply when .condition() evaluates to FALSE
 #' @param ... additional arguments that will be passed to .f()
-#' @inheritParams prrr::map_df
 #'
 #' @return A data frame
 #' @export
