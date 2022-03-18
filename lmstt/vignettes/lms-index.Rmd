@@ -16,51 +16,7 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(lmstt)
-```
-
-```{r, setup, include=FALSE}
-library(mosaic)    # Load additional packages here 
-library(ggformula) # formula interface to ggplot2
-library(plotly)
-library(tidyverse)
-library(tidyxl)
-library(unpivotr)
-library(readxl)
-library(stringi)
-
-# Some customization.  You can alter or delete as desired (if you know what you are doing).
-
-knitr::opts_chunk$set(
-  echo = params$show_code
-  )  
-```
-
-
-  
-```{r}
-oilSpills <- xlsx_cells('oilSpillsUS.xlsx') %>%   #convert to cell format so that tidyxl and unpivotr work
-  filter(row != 1) %>%        #first row is title of the table
-  select(row, col, data_type, character, numeric)   #select the columns containing data and its location
-
-oilSpills <- oilSpills %>% 
-  behead("up-left", Year) %>%  #behead Year
-  filter(row < 14)  %>%   #last rows are metadata so filter them out
-  behead("up", Value) %>%  #behead Incidents and Gallons spilled
-  behead('left', Source) %>%  #behead Source
-  pivot_wider(names_from = Value, values_from = numeric) #pivot wider so there is a column for Incidents and Gallons spilled
-
-oilSpills <- oilSpills %>% 
- select(Year, Source, Incidents, `Gallons spilled`) %>% 
- group_by(Year, Source) %>% 
- summarise_all(list(~trimws(paste(., collapse = '')))) %>% #merge rows together
- ungroup()
-
-oilSpills$Incidents <- gsub('.{2}$', '', oilSpills$Incidents) %>%  #trim NAs
-  as.numeric() %>% #convert string to double 
-  suppressWarnings()  #suppress warnings, there should be some NAs
-oilSpills$`Gallons spilled` <- gsub('^[A-Za-z]{2}', '', oilSpills$`Gallons spilled`) %>% #trim NAs
-  as.numeric() %>% #convert string to double
-   suppressWarnings()   #suppress warnings, there should be some NAs
+data("oilSpills")
 ```
 
 
@@ -72,13 +28,13 @@ The data came from the [Bureau of Transportation Statistics](https://www.bts.gov
 ### Gallons Spilled
 
 ```{r}
-oilSpills %>% filter(Source == "Vessel sources, total" | 
+oilSpills %>% dplyr::filter(Source == "Vessel sources, total" | 
                      Source == "Nonvessel sources, total"|
                      Source == "Mysteryc") %>%
-  plot_ly(x = ~Year, y =~`Gallons spilled`, color = ~Source, type="bar", colors = 
+  plotly::plot_ly(x = ~Year, y =~`Gallons spilled`, color = ~Source, type="bar", colors = 
             c("#a6cee3", "#1f78b4", "#b2df8a"),
            width = 1000) %>%
-  layout(yaxis = list(fixedrange = FALSE),
+  plotly::layout(yaxis = list(fixedrange = FALSE),
          updatemenus = list(
             list(
               type = "buttons",
@@ -104,12 +60,12 @@ oilSpills %>% filter(Source == "Vessel sources, total" |
 ### Incidents
 
 ```{r}
-oilSpills %>% filter(Source == "Vessel sources, total"| 
+oilSpills %>% dplyr::filter(Source == "Vessel sources, total"| 
                      Source == "Nonvessel sources, total"|
                      Source == "Mysteryc")  %>%
-  drop_na() %>%
-  plot_ly(width = 1000) %>%
-  add_trace(x = ~Year, y = ~Incidents, type = 'scatter', color =~Source, mode = 'lines+markers', 
+  tidyr::drop_na() %>%
+  plotly::plot_ly(width = 1000) %>%
+  plotly::add_trace(x = ~Year, y = ~Incidents, type = 'scatter', color =~Source, mode = 'lines+markers', 
             colors = c("#a6cee3", "#1f78b4", "#b2df8a"))
   
 ```
@@ -123,18 +79,18 @@ y2 <- list(
   title = "Number of Incidents",
   automargin = T)
 
-oilSpills %>% filter(Source != "TOTAL all spills", 
+oilSpills %>% dplyr::filter(Source != "TOTAL all spills", 
                      Source != "Vessel sources, total", 
                      Source != "Nonvessel sources, total")  %>%
-  drop_na() %>%
-  mutate(Source = fct_reorder(Source, desc(`Gallons spilled`))) %>%
-  plot_ly(x = ~Year, y =~`Gallons spilled`, color = ~Source, type="bar", colors = "Accent",
+  tidyr::drop_na() %>%
+  dplyr::mutate(Source = fct_reorder(Source, desc(`Gallons spilled`))) %>%
+  plotly::plot_ly(x = ~Year, y =~`Gallons spilled`, color = ~Source, type="bar", colors = "Accent",
           width = 1000, height = 500) %>%
-  group_by(Year) %>%
-  summarise(n = sum(Incidents)) %>%
-  add_trace(x = ~Year, y = ~n, type = 'scatter',  mode = 'markers', 
+  dplyr::group_by(Year) %>%
+  dplyr::summarise(n = sum(Incidents)) %>%
+  plotly::add_trace(x = ~Year, y = ~n, type = 'scatter',  mode = 'markers', 
             name = "Incidents", yaxis = "y2", color = I("black")) %>%
-  layout(yaxis2 = y2,
+  plotly::layout(yaxis2 = y2,
          yaxis = list(fixedrange = FALSE),
           updatemenus = list(
             list(
@@ -152,7 +108,7 @@ oilSpills %>% filter(Source != "TOTAL all spills",
                 args = list("barmode","stack"),
                 label = "Stacked")))
   )) %>%
-  rangeslider()
+  plotly::rangeslider()
 
 ```
 
