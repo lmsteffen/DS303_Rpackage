@@ -16,7 +16,7 @@
 #' df_apply(iris, round, is.numeric, return, digit = 1)
 #'
 
-df_apply <- function(.data, .f, .condition, .else, ...) {
+df_apply <- function(.data, .f, .condition = is.numeric, .else = return, ...) {
   .data |> purrr::map_df(
     function(.x){
       if (.condition(.x)) .f(.x, ...) else (.else(.x))
