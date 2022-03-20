@@ -4,7 +4,7 @@
 \alias{df_apply}
 \title{Apply functions to data frame}
 \usage{
-df_apply(.data, .f, .condition = is.numeric, .else = return, ...)
+df_apply(.data, .f, .condition = is.numeric, .else = identity, ...)
 }
 \arguments{
 \item{.data}{A data frame}
@@ -24,6 +24,6 @@ A data frame
 Apply functions to data frame
 }
 \examples{
-df_apply(iris, round, is.numeric, return, digit = 1)
+df_apply(iris, round, is.numeric, identity, digit = 1)
 
 }

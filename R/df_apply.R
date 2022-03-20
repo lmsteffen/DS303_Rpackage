@@ -14,10 +14,10 @@
 #' @importFrom purrr map_df
 #'
 #' @examples
-#' df_apply(iris, round, is.numeric, return, digit = 1)
+#' df_apply(iris, round, is.numeric, identity, digit = 1)
 #'
 
-df_apply <- function(.data, .f, .condition = is.numeric, .else = return, ...) {
+df_apply <- function(.data, .f, .condition = is.numeric, .else = identity, ...) {
   .data |> purrr::map_df(
     function(.x){
       if (.condition(.x)) .f(.x, ...) else (.else(.x))
