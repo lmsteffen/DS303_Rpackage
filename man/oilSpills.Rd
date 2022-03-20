@@ -24,7 +24,7 @@ A dataset containing yearly gallons spilled, number of incidents, and source typ
 of oil spills from 1985, 1990, 1995-2020.
 }
 \examples{
-oilSpills \%>\% group_by(Year) \%>\% summarize(Gallons = sum(`Gallons spilled`))
+oilSpills |> dplyr::group_by(Year) |> dplyr::summarize(Gallons = sum(`Gallons spilled`))
 
 }
 \keyword{datasets}

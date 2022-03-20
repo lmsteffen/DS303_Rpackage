@@ -10,7 +10,7 @@
 #' * Gallons spilled: number of gallons of oil spilled of that source for that year
 #'
 #'@examples 
-#' oilSpills %>% group_by(Year) %>% summarize(Gallons = sum(`Gallons spilled`))
+#' oilSpills |> dplyr::group_by(Year) |> dplyr::summarize(Gallons = sum(`Gallons spilled`))
 #'
 #'@source \url{https://www.bts.gov/content/petroleum-oil-spills-impacting-navigable-us-waters}
 #'
