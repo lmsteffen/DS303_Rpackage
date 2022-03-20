@@ -16,8 +16,6 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(lmstt)
-library(dplyr)
-data("oilSpills")
 ```
 
 
@@ -29,12 +27,12 @@ The data came from the [Bureau of Transportation Statistics](https://www.bts.gov
 ### Gallons Spilled
 
 ```{r}
-oilSpills %>% dplyr::filter(Source == "Vessel sources, total" | 
+oilSpills |> dplyr::filter(Source == "Vessel sources, total" | 
                      Source == "Nonvessel sources, total"|
-                     Source == "Mysteryc") %>%
+                     Source == "Mysteryc") |> 
   plotly::plot_ly(x = ~Year, y =~`Gallons spilled`, color = ~Source, type="bar", colors = 
             c("#a6cee3", "#1f78b4", "#b2df8a"),
-           width = 1000) %>%
+           width = 1000) |>
   plotly::layout(yaxis = list(fixedrange = FALSE),
          updatemenus = list(
             list(
@@ -61,11 +59,11 @@ oilSpills %>% dplyr::filter(Source == "Vessel sources, total" |
 ### Incidents
 
 ```{r}
-oilSpills %>% dplyr::filter(Source == "Vessel sources, total"| 
+oilSpills |> dplyr::filter(Source == "Vessel sources, total"| 
                      Source == "Nonvessel sources, total"|
-                     Source == "Mysteryc")  %>%
-  tidyr::drop_na() %>%
-  plotly::plot_ly(width = 1000) %>%
+                     Source == "Mysteryc")  |>
+  tidyr::drop_na() |>
+  plotly::plot_ly(width = 1000) |>
   plotly::add_trace(x = ~Year, y = ~Incidents, type = 'scatter', color =~Source, mode = 'lines+markers', 
             colors = c("#a6cee3", "#1f78b4", "#b2df8a"))
   
@@ -80,17 +78,17 @@ y2 <- list(
   title = "Number of Incidents",
   automargin = T)
 
-oilSpills %>% dplyr::filter(Source != "TOTAL all spills", 
+oilSpills |> dplyr::filter(Source != "TOTAL all spills", 
                      Source != "Vessel sources, total", 
-                     Source != "Nonvessel sources, total")  %>%
-  tidyr::drop_na() %>%
-  dplyr::mutate(Source = forcats::fct_reorder(Source, dplyr::desc(`Gallons spilled`))) %>%
+                     Source != "Nonvessel sources, total")  |>
+  tidyr::drop_na() |>
+  dplyr::mutate(Source = forcats::fct_reorder(Source, dplyr::desc(`Gallons spilled`))) |>
   plotly::plot_ly(x = ~Year, y =~`Gallons spilled`, color = ~Source, type="bar", colors = "Accent",
-          width = 1000, height = 500) %>%
-  dplyr::group_by(Year) %>%
-  dplyr::summarise(n = sum(Incidents)) %>%
+          width = 1000, height = 500) |>
+  dplyr::group_by(Year) |>
+  dplyr::summarise(n = sum(Incidents)) |>
   plotly::add_trace(x = ~Year, y = ~n, type = 'scatter',  mode = 'markers', 
-            name = "Incidents", yaxis = "y2", color = I("black")) %>%
+            name = "Incidents", yaxis = "y2", color = I("black")) |>
   plotly::layout(yaxis2 = y2,
          yaxis = list(fixedrange = FALSE),
           updatemenus = list(
@@ -108,7 +106,7 @@ oilSpills %>% dplyr::filter(Source != "TOTAL all spills",
                 list(method = "relayout",
                 args = list("barmode","stack"),
                 label = "Stacked")))
-  )) %>%
+  )) |>
   plotly::rangeslider()
 
 ```
