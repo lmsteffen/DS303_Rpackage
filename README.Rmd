@@ -6,7 +6,7 @@ output: github_document
 
 The `lmstt` package is maintained on github and can be installed via
 
-```{r}
+```{r message = FALSE, echo = FALSE, warning =FALSE}
 devtools::install_github('lmsteffen/lmstt')
 ```
 
