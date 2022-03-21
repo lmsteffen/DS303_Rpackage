@@ -1,0 +1,11 @@
+pandoc: 2.14.0.3
+pkgdown: 2.0.2
+pkgdown_sha: ~
+articles:
+  lms-index: lms-index.html
+  tom-index: tom-index.html
+last_built: 2022-03-21T02:51Z
+urls:
+  reference: https://lmsteffen.github.io/lmstt/reference
+  article: https://lmsteffen.github.io/lmstt/articles
+
