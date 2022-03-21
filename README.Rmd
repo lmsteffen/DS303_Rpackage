@@ -1,0 +1,22 @@
+---
+output: github_document
+---
+
+## Installation
+
+The `lmstt` package is maintained on github and can be installed via
+
+```{r}
+devtools::install_github('lmsteffen/lmstt')
+```
+
+
+## Example
+
+The `lmstt` package contains the `df_apply` function which will apply a function and any arguments to a selection of columns in a dataframe. An example is shown below on the `iris` dataset. 
+
+```{r message=FALSE}
+library(lmstt)
+df_apply(iris, round, is.numeric, identity, digit = 0)
+```
+
