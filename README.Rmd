@@ -6,7 +6,7 @@ output: github_document
 
 The `lmstt` package is maintained on github and can be installed via
 
-```{r message = FALSE, echo = FALSE, warning =FALSE}
+```{r warning=FALSE, results = "hide", message = FALSE}
 devtools::install_github('lmsteffen/lmstt')
 ```
 
@@ -17,6 +17,6 @@ The `lmstt` package contains the `df_apply` function which will apply a function
 
 ```{r message=FALSE}
 library(lmstt)
-df_apply(iris, round, is.numeric, identity, digit = 0)
+df_apply(iris, round, is.numeric, identity, digit = 0) |> head()
 ```
 
