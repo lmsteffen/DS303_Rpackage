@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 ## Installation
 
@@ -73,3 +74,7 @@ df_apply(iris, round, is.numeric, identity, digit = 0)
     ##  9            4           3            1           0 setosa 
     ## 10            5           3            2           0 setosa 
     ## # … with 140 more rows
+=======
+# DS303_Rpackage
+[Project page](https://lmsteffen.github.io/lmstt/)
+>>>>>>> ca70ccc0d1233d6a9c87e632246ae24d79ab59b2
