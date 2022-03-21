@@ -1,2 +1,2 @@
 # DS303_Rpackage
-[Project page](https://github.com/lmsteffen/lmstt)
+[Project page](https://lmsteffen.github.io/lmstt/)
