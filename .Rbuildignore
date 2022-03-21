@@ -3,3 +3,6 @@
 ^LICENSE\.md$
 ^DS303_Rpackage.Rproj
 ^data-raw
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
